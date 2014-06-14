@@ -1,0 +1,10 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+ <entry key="mc_file.getFileById"><![CDATA[select f.companyid as companyId,f.file_name as fileName, f.original_name as originalFileName,t.mime_type as mineType 
+  from mc_file f 
+  inner join mc_lu_mime_types t on (t.file_type = f.file_type) 
+  where f.id = :fileId]]></entry>
+  <entry key="testing"><![CDATA[select * from buttonwood.tb_address_type where address_type_code=:code]]></entry>
+  <entry key="country"><![CDATA[select * from buttonwood.tb_country where code=:code]]></entry>
+</properties>
