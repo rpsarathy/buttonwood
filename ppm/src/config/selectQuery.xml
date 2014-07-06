@@ -6,5 +6,5 @@
   inner join mc_lu_mime_types t on (t.file_type = f.file_type) 
   where f.id = :fileId]]></entry>
   <entry key="testing"><![CDATA[select * from buttonwood.tb_address_type where address_type_code=:code]]></entry>
-  <entry key="country"><![CDATA[select * from buttonwood.tb_country where code=:code]]></entry>
+  <entry key="company"><![CDATA[select * from buttonwood.tb_company]]></entry>
 </properties>
