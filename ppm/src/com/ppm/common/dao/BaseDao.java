@@ -25,4 +25,6 @@ public class BaseDao {
 		return (DataSource)SpringUtil.getContext().getBean("dataSource1");
 	}
 	
+	protected NamedParameterJdbcTemplate namedParameterJdbcTemplate= new NamedParameterJdbcTemplate(this.getDataSource());
+	
 }

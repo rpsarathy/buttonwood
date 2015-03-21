@@ -5,6 +5,67 @@
   from mc_file f 
   inner join mc_lu_mime_types t on (t.file_type = f.file_type) 
   where f.id = :fileId]]></entry>
-  <entry key="testing"><![CDATA[select * from buttonwood.tb_address_type where address_type_code=:code]]></entry>
-  <entry key="company"><![CDATA[select * from buttonwood.tb_company]]></entry>
+  <entry key="company1"><![CDATA[select a.*,(select count(1) from buttonwood.tb_company a where company_code in( @inOpCode@ ) ) total_count from buttonwood.tb_company a where company_code in( @inOpCode@ ) ]]></entry>
+  
+  <entry key="company"><![CDATA[select * from buttonwood.tb_company where company_name like '%@phLike@%']]></entry>
+  
+  
+  <entry key="insertCompany"><![CDATA[insert into buttonwood.tb_company (company_name) values (:tbParamCompanyName) ]]></entry>
+  <entry key="userDetail"><![CDATA[Select * from tb_user where user_name=:userName and password=:password and is_active='Y']]></entry>
+  <entry key="sentMessages"><![CDATA[select tb_user.user_name,tb_company.company_name,tb_deal.title,tb_message.posted_date,tb_message.message,(select count(1) from tb_user,tb_company,tb_deal,tb_message
+where tb_company.company_code=tb_user.company_code and tb_deal.deal_code=tb_message.deal_code and tb_message.reciever_usercode=tb_user.user_code and tb_message.sender_usercode=:senderUserCode) total_count from tb_user,tb_company,tb_deal,tb_message
+where tb_company.company_code=tb_user.company_code and tb_deal.deal_code=tb_message.deal_code and tb_message.reciever_usercode=tb_user.user_code and tb_message.sender_usercode=:senderUserCode limit @phLimit@]]></entry>
+  <entry key="receivedMessages"><![CDATA[select tb_user.user_name,tb_company.company_name,tb_deal.title,tb_message.posted_date,tb_message.message,(select count(1) from tb_user,tb_company,tb_deal,tb_message
+where tb_company.company_code=tb_user.company_code and tb_deal.deal_code=tb_message.deal_code and tb_message.sender_usercode=tb_user.user_code and tb_message.reciever_usercode=:receiverUserCode) total_count from tb_user,tb_company,tb_deal,tb_message
+where tb_company.company_code=tb_user.company_code and tb_deal.deal_code=tb_message.deal_code and tb_message.sender_usercode=tb_user.user_code and tb_message.reciever_usercode=:receiverUserCode limit @phLimit@]]></entry>
+  <entry key="trashMessages"><![CDATA[select tb_user.user_name,tb_company.company_name,tb_deal.title,tb_message.posted_date,tb_message.message,(select count(1) from tb_user,tb_company,tb_deal,tb_message where tb_company.company_code=tb_user.company_code and tb_deal.deal_code=tb_message.deal_code and tb_message.sender_usercode=tb_user.user_code and isactive <> 'Y' and tb_message.reciever_usercode=:receiverUserCode) total_count from tb_user,tb_company,tb_deal,tb_message
+where tb_company.company_code=tb_user.company_code and tb_deal.deal_code=tb_message.deal_code and tb_message.sender_usercode=tb_user.user_code and isactive <> 'Y' and tb_message.reciever_usercode=:receiverUserCode limit @phLimit@]]></entry>
+  <entry key="buttonwoodActivity"><![CDATA[select tb_user.user_name,tb_company.company_name,tb_deal.title,tb_message.posted_date,(select count(1) from tb_user,tb_company,tb_deal,tb_message
+where tb_company.company_code=tb_user.company_code and tb_deal.deal_code=tb_message.deal_code and tb_message.reciever_usercode=:userCode) total_count from tb_user,tb_company,tb_deal,tb_message
+where tb_company.company_code=tb_user.company_code and tb_deal.deal_code=tb_message.deal_code and tb_message.reciever_usercode=:userCode limit 2]]></entry>
+  <entry key="buttonwoodActivityAll"><![CDATA[select tb_user.user_name,tb_company.company_name,tb_deal.title,tb_message.posted_date,(select count(1) from tb_user,tb_company,tb_deal,tb_message
+where tb_company.company_code=tb_user.company_code and tb_deal.deal_code=tb_message.deal_code and tb_message.reciever_usercode=:userCode) total_count from tb_user,tb_company,tb_deal,tb_message
+where tb_company.company_code=tb_user.company_code and tb_deal.deal_code=tb_message.deal_code and tb_message.reciever_usercode=:userCode limit @phLimit@]]></entry>
+  <entry key="dealFlow"><![CDATA[SELECT tb_deal.title,tb_deal.market_code,tb_deal.deal_lower_limit,tb_deal.deal_upper_limit,tb_deal.currency,substring(tb_deal.description,1,100) description,
+(select count(1) FROM tb_deal,tb_user,tb_user_deal_flow,tb_markets where tb_deal.asset_code=tb_user_deal_flow.asset_code and tb_deal.sub_asset_code=tb_user_deal_flow.sub_asset_code
+and tb_deal.market_code=tb_markets.market_code and tb_deal.currency=tb_user_deal_flow.currency_code and tb_user.user_code=tb_user_deal_flow.user_code and tb_user.user_code=:userCode) total_count
+FROM tb_deal,tb_user,tb_user_deal_flow,tb_markets where tb_deal.asset_code=tb_user_deal_flow.asset_code and tb_deal.sub_asset_code=tb_user_deal_flow.sub_asset_code
+and tb_deal.market_code=tb_markets.market_code and tb_deal.currency=tb_user_deal_flow.currency_code and tb_user.user_code=tb_user_deal_flow.user_code and tb_user.user_code=:userCode limit 2]]></entry>
+<entry key="dealFlowAll"><![CDATA[SELECT tb_deal.title,tb_deal.market_code,tb_deal.deal_lower_limit,tb_deal.deal_upper_limit,tb_deal.currency,substring(tb_deal.description,1,100) description,
+(select count(1) from tb_deal,tb_user,tb_user_deal_flow,tb_markets where tb_deal.asset_code=tb_user_deal_flow.asset_code and tb_deal.sub_asset_code=tb_user_deal_flow.sub_asset_code
+and tb_deal.market_code=tb_markets.market_code and tb_deal.currency=tb_user_deal_flow.currency_code and tb_user.user_code=tb_user_deal_flow.user_code and tb_user.user_code=:userCode) total_count
+FROM tb_deal,tb_user,tb_user_deal_flow,tb_markets where tb_deal.asset_code=tb_user_deal_flow.asset_code and tb_deal.sub_asset_code=tb_user_deal_flow.sub_asset_code
+and tb_deal.market_code=tb_markets.market_code and tb_deal.currency=tb_user_deal_flow.currency_code and tb_user.user_code=tb_user_deal_flow.user_code and tb_user.user_code=:userCode limit @phLimit@]]></entry>
+<entry key="dealDetail"><![CDATA[select tb_deal.title,tb_deal.market_code,tb_deal.currency,tb_asset_class.description assetclass, tb_sub_asset_class.description subassetclass,
+tb_deal.deal_lower_limit,tb_deal.deal_upper_limit,substring(tb_deal.description,1,100) description from tb_deal,tb_asset_class,tb_sub_asset_class where tb_deal.asset_code=tb_asset_class.asset_code and tb_deal.sub_asset_code=tb_sub_asset_class.sub_asset_code
+and tb_deal.deal_code=:userCode]]></entry>
+<entry key="dealSearch"><![CDATA[select (select count(1) from tb_deal where Asset_Code in (@inOpAssetCode@) and sub_asset_code in(@inOpSubAssetCode@) and market_code in(@inOpMarketCode@) and deal_lower_limit >=:dealLowerLimit and deal_upper_limit <=:dealUpperLimit and currency =:currency and (title like '%@phLike@%' or description like '%@phLike@%')) total_count,title,date_posted,deal_sponsor,substring(description,1,100) description from tb_deal where Asset_Code in (@inOpAssetCode@) and sub_asset_code in(@inOpSubAssetCode@) and market_code in(@inOpMarketCode@) and deal_lower_limit >=:dealLowerLimit and deal_upper_limit <=:dealUpperLimit and currency =:currency and (title like '%@phLike@%' or description like '%@phLike@%') order by @phOrder@ limit @phLimit@]]></entry>
+<entry key="dealCriteria"><![CDATA[select asset_code,sub_asset_code,currency_code,market_code,deal_lower_limit,deal_upper_limit,notification_frequency from tb_user_deal_flow where user_code=:userCode]]></entry>
+
+<entry key="dealPosted"><![CDATA[select * from (select 'Deals Posted',tb_deal.* from tb_deal where deal_sponsor=:userCode order by date_posted) deal LIMIT 5]]></entry>
+
+<entry key="dealFlowForMyDeal"><![CDATA[select * from (select 'Deals Flow',deal.* from tb_deal deal, tb_user_deal_flow flow where deal.asset_code = flow.asset_code 
+
+and deal.sub_asset_code = flow.sub_asset_code and deal.market_code=flow.market_code and deal.deal_lower_limit >= flow.deal_lower_limit
+
+and deal.deal_upper_limit <= flow.deal_upper_limit and flow.user_code=:userCode order by date_posted) deal LIMIT 5]]></entry>
+
+<entry key="dealPursued"><![CDATA[select * from (select 'Deals Pursued',deal.* from tb_deal deal where deal_code in (select  deal_code from tb_message where sender_usercode=:userCode)) deal LIMIT 5]]></entry>
+
+<entry key="dealPostedAll"><![CDATA[select (select count(1) from tb_deal where deal_sponsor=:userCode) total_count,deal.* from (select 'Deals Posted',tb_deal.* from tb_deal where deal_sponsor=:userCode order by date_posted) deal limit @phLimit@]]></entry>
+
+<entry key="dealFlowForMyDealAll"><![CDATA[select (select count(1) from tb_deal deal, tb_user_deal_flow flow where deal.asset_code = flow.asset_code 
+
+and deal.sub_asset_code = flow.sub_asset_code and deal.market_code=flow.market_code and deal.deal_lower_limit >= flow.deal_lower_limit
+
+and deal.deal_upper_limit <= flow.deal_upper_limit and flow.user_code=:userCode order by date_posted) total_count,deal.* from (select 'Deals Flow',deal.* from tb_deal deal, tb_user_deal_flow flow where deal.asset_code = flow.asset_code 
+
+and deal.sub_asset_code = flow.sub_asset_code and deal.market_code=flow.market_code and deal.deal_lower_limit >= flow.deal_lower_limit
+
+and deal.deal_upper_limit <= flow.deal_upper_limit and flow.user_code=:userCode order by date_posted) deal limit @phLimit@]]></entry>
+
+<entry key="dealPursuedAll"><![CDATA[select deal.*,(select count(1) from tb_deal deal where deal_code in (select  deal_code from tb_message where sender_usercode=:userCode)) total_count from (select 'Deals Pursued',deal.* from tb_deal deal where deal_code in (select  deal_code from tb_message where sender_usercode=:userCode)) deal limit @phLimit@]]></entry>
+<entry key="insertDeal"><![CDATA[Insert into buttonwood.tb_deal(title,deal_sponsor,participant_role,asset_code,sub_asset_code,market_code,deal_lower_limit,deal_upper_limit,currency,is_anonymous,date_posted,last_modified,description) values (:tbParamDealTitle,:tbParamSponsorCode,:tbParamParticipantRole,:tbParamAssetCode,:tbParamSubAssetCode,:tbParamMarketCode,:tbParamDealLowerLimit,:tbParamDealUpperLimit,:tbParamCurrency,:tbParamIsAnonymous,:tbParamDatePosted,:tbParamDateModified,:tbParamDescription) ]]></entry>
+<entry key="companyUpdate"><![CDATA[update buttonwood.tb_company set company_name=:tbParamCompanyName where company_code=:tbParamCompanyCode]]></entry>
+ 
 </properties>

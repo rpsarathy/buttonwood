@@ -21,9 +21,19 @@ public class SelectDao extends BaseDao {
 	
 	public List<TableRow> getSelectList(Map<String, String> paramMap)
 	{
-		NamedParameterJdbcTemplate namedParameterJdbcTemplate= new NamedParameterJdbcTemplate(dataSource);
+		
 		System.out.println(paramMap);
 		String sql=PropertiesUtil.getProperty(paramMap.get(QUERY_NAME));
+		String replace="";
+		String replaced="";
+		for(String str:paramMap.keySet()){
+			if(str.startsWith("inOp")||str.startsWith("ph"))
+			{
+				replace="@"+str+"@";
+				replaced=paramMap.get(str);
+				sql=sql.replaceAll(replace, replaced);
+			}
+		}
 		List<TableRow> ls=namedParameterJdbcTemplate.query(sql, paramMap, new SelectRowMapper() );
 		return ls;
 	}
